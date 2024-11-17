@@ -1,35 +1,59 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { ReactElement, SetStateAction, useState } from 'react'
 import './App.css'
+import { MagusCreationScreen } from './MagusCreation';
+import { CompanionCreationScreen } from './CompanionCreation';
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const [currentScreen, setCurrentScreen] = useState(DefaultScreen);
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+  function createGrog(){
+    setCurrentScreen((): ReactElement => {return <><GrogCreationScreen /> <ResetButton /> </>});
+  }
+
+  function createCompanion(){
+    setCurrentScreen((): ReactElement => {return <><CompanionCreationScreen /> <ResetButton /> </>});
+  }
+
+  function createMagus(){
+    setCurrentScreen((): ReactElement => {return <><MagusCreationScreen /> <ResetButton/></>});
+  }
+
+  function DefaultScreen(): ReactElement{
+    const characterOptions: ReactElement = <div className="characterSelector" id="optionButtons">
+    <button onClick={createGrog}>Grog</button>
+    <button onClick={createCompanion}>Companion</button>
+    <button onClick={createMagus}>Magus</button>
+  </div>
+    document.getElementById("optionButtons")?.style.setProperty("--pageWidth", window.screen.width.toString());
+    return <div className="pageOne">
+      <h1 className="itBegins">Ars Magica Character Creator</h1>
+      <h2>Character Type</h2>
+      {characterOptions}
+    </div>;
+  }
+
+  function ResetButton(): ReactElement {
+    return <button onClick={reset} className="bottom">Reset</button>
+  }
+
+  function reset(){
+    setCurrentScreen((): ReactElement => {return <DefaultScreen />});
+  }
+
+  return(<>
+    {currentScreen}
+  </>);
 }
 
-export default App
+function GrogCreationScreen(): ReactElement{
+  return <div>Why would you make a grog?</div>;
+}
+
+{/* <div>
+    <h2>Character Type</h2>
+    <div className="characterSelector">
+      <button onClick={createGrog}>Grog</button>
+      <button onClick={createCompanion}>Companion</button>
+      <button onClick={createMagus}>Magus</button>
+    </div>
+  </div> */}
